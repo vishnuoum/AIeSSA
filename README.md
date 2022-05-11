@@ -1,6 +1,6 @@
 # app_for_specially_abled
 
-A rflutter based application for specially abled people
+A flutter based application for specially abled people.
 
 ## Getting Started
 
