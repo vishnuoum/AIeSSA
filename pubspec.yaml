@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   noise_meter: ^3.0.3
   text_to_speech: ^0.2.3
+  speech_to_text: ^5.4.3
 
 dev_dependencies:
   flutter_test:
