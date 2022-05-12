@@ -1,4 +1,5 @@
 import 'package:app_for_specially_abled/pages/home.dart';
+import 'package:app_for_specially_abled/pages/noiseMeter.dart';
 import 'package:app_for_specially_abled/pages/signChat.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/" : (context) => Home(),
         "/signChat" : (context) => SignChat(),
+        "/noiseMeter" : (context) => NoiseMeterClass(),
       },
       initialRoute: "/",
     );

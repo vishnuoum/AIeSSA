@@ -24,7 +24,9 @@ class _HomeState extends State<Home> {
           ElevatedButton(onPressed: (){
             Navigator.pushNamed(context, "/signChat");
           }, child: Text("Sign Chat")),
-          ElevatedButton(onPressed: (){}, child: Text("Noise Meter")),
+          ElevatedButton(onPressed: (){
+            Navigator.pushNamed(context, "/noiseMeter");
+          }, child: Text("Noise Meter")),
           ElevatedButton(onPressed: (){}, child: Text("Voice Assign")),
           ElevatedButton(onPressed: (){}, child: Text("Learn")),
         ],
