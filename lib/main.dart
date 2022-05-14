@@ -1,3 +1,4 @@
+import 'package:app_for_specially_abled/pages/audioNav%20custom.dart';
 import 'package:app_for_specially_abled/pages/audioNav.dart';
 import 'package:app_for_specially_abled/pages/home.dart';
 import 'package:app_for_specially_abled/pages/noiseMeter.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         "/signChat" : (context) => SignChat(),
         "/noiseMeter" : (context) => NoiseMeterClass(),
         "/audioNav" : (context) => AudioNav(),
+        "/audioNavCustom" : (context) => AudioNavCustom(),
       },
       initialRoute: "/",
     );
