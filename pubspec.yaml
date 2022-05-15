@@ -33,6 +33,8 @@ dependencies:
   speech_to_text: ^5.4.3
   percent_indicator: ^4.2.0
   tflite_audio: ^0.3.0
+  shared_preferences: ^2.0.7
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
