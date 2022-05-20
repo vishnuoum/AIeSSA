@@ -1,6 +1,7 @@
 import 'package:app_for_specially_abled/pages/audioNav%20custom.dart';
 import 'package:app_for_specially_abled/pages/audioNav.dart';
 import 'package:app_for_specially_abled/pages/home.dart';
+import 'package:app_for_specially_abled/pages/learn.dart';
 import 'package:app_for_specially_abled/pages/noiseMeter.dart';
 import 'package:app_for_specially_abled/pages/signChat.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         "/noiseMeter" : (context) => NoiseMeterClass(),
         "/audioNav" : (context) => AudioNav(),
         "/audioNavCustom" : (context) => AudioNavCustom(),
+        "/learn" : (context) => Learn(),
       },
       initialRoute: "/",
     );
