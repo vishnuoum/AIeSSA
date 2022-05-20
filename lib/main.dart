@@ -3,6 +3,7 @@ import 'package:app_for_specially_abled/pages/audioNav.dart';
 import 'package:app_for_specially_abled/pages/home.dart';
 import 'package:app_for_specially_abled/pages/learn.dart';
 import 'package:app_for_specially_abled/pages/noiseMeter.dart';
+import 'package:app_for_specially_abled/pages/player.dart';
 import 'package:app_for_specially_abled/pages/signChat.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         "/audioNav" : (context) => AudioNav(),
         "/audioNavCustom" : (context) => AudioNavCustom(),
         "/learn" : (context) => Learn(),
+        "/player" : (context) => Player(arguments: ModalRoute.of(context)!.settings.arguments as Map),
       },
       initialRoute: "/",
     );

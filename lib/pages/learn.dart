@@ -166,6 +166,13 @@ class _LearnState extends State<Learn> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: (){
+          scan(context);
+        },
+        label: Text("Sign Cam"),
+        icon: Icon(Icons.camera_alt),
+      ),
     );
   }
 }
