@@ -1,4 +1,6 @@
+import 'package:app_for_specially_abled/services/uploadVideo.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -18,6 +20,9 @@ class _SignChatState extends State<SignChat> {
   SpeechToText _speechToText = SpeechToText();
   bool listening = false, chatting = false, _speechEnabled = false;
   String words="";
+  UploadVideo uploadVideo = UploadVideo();
+
+  final ImagePicker _picker = ImagePicker();
 
 
   TextToSpeech tts = TextToSpeech();
@@ -32,11 +37,58 @@ class _SignChatState extends State<SignChat> {
     super.initState();
   }
 
+  showLoading(BuildContext context){
+    AlertDialog alert =AlertDialog(
+      content: SizedBox(
+        height: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 10,),
+            Text("Loading")
+          ],
+        ),
+      ),
+    );
+
+    showDialog(context: context,builder:(BuildContext context){
+      return WillPopScope(onWillPop: ()async => false,child: alert);
+    });
+  }
+
+  Future<void> alertDialog(var text) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Alert'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(text),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Init speech engine
   void _initSpeech() async {
     _speechEnabled = await _speechToText.initialize(
-      onStatus: statusListener,
-      onError: errorListener
+        onStatus: statusListener,
+        onError: errorListener
     );
     setState(() {});
   }
@@ -58,9 +110,9 @@ class _SignChatState extends State<SignChat> {
 
   // Speech result
   void _onSpeechResult(SpeechRecognitionResult result) {
-    print(result);
+    print(result.recognizedWords);
     setState(() {
-      words = "$words ${result.recognizedWords}";
+      words = "${result.recognizedWords}";
     });
   }
 
@@ -93,7 +145,27 @@ class _SignChatState extends State<SignChat> {
           child: InkWell(
             radius: 50,
             borderRadius: BorderRadius.circular(splashRadius),
-            onTap: () {},
+            onTap: () async {
+              final XFile? video = await _picker.pickVideo(source: ImageSource.camera);
+              showLoading(context);
+              print(video!.path);
+              var result = await uploadVideo.upload(path: video.path);
+              print(result);
+              if(result=="error"){
+                alertDialog("Something went wrong. Try again");
+                return;
+              }
+              Navigator.pop(context);
+              if(result["status"]=="done" && result["sentence"].length!=0) {
+                setState(() {
+                  chat.add({"person": "other", "content": result["sentence"]});
+                });
+              }
+              else{
+                alertDialog("Sorry.... No action detected");
+                return;
+              }
+            },
             onLongPress: () {
               tts.speak("Convert sign to text");
             },
@@ -151,10 +223,10 @@ class _SignChatState extends State<SignChat> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
-          flex: 5,
-          child: SingleChildScrollView(
-            child: Center(child: Text(words)),
-          )
+            flex: 5,
+            child: SingleChildScrollView(
+              child: Center(child: Text(words)),
+            )
         ),
         Expanded(
           child: CircleAvatar(
@@ -186,8 +258,8 @@ class _SignChatState extends State<SignChat> {
               child: Container(
                 margin: EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: chatBoxColor,
-                  borderRadius: BorderRadius.circular(50)
+                    color: chatBoxColor,
+                    borderRadius: BorderRadius.circular(50)
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
@@ -232,7 +304,7 @@ class _SignChatState extends State<SignChat> {
     );
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,6 +324,9 @@ class _SignChatState extends State<SignChat> {
                   itemBuilder: (context,index){
                     index=chat.length - 1 - index;
                     return GestureDetector(
+                      onDoubleTap: (){
+                        Navigator.pushNamed(context, "/textToSign",arguments: {"sentence":chat[index]["content"]});
+                      },
                       onLongPress: (){
                         tts.speak(chat[index]["content"]);
                       },
@@ -276,8 +351,8 @@ class _SignChatState extends State<SignChat> {
             ),
             Container(
               constraints: BoxConstraints(
-                maxHeight: 100,
-                minHeight: 65
+                  maxHeight: 100,
+                  minHeight: 65
               ),
               child: listening?audioNav():chatting?chatNav():bottomNav(),
             )
