@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Convener Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+    <style>
+        body {
+            background-color: rgb(0, 123, 255);
+        }
+
+        h3 {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            background-color: white;
+            padding: 20px;
+            padding-bottom: 5px !important;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .banner {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            top: 80%;
+        }
+
+        input {
+            /* border-color: #0275d8 !important; */
+            border-radius: 5px;
+        }
+
+        .text-center {
+            margin-top: -5px;
+            margin-bottom: 8px !important;
+        }
+
+        @media screen and (max-height: 700px) {
+            .banner {
+                top: 82%;
+            }
+        }
+
+        @media screen and (max-height: 600px) {
+            .banner {
+                top: 84%;
+            }
+        }
+
+        @media screen and (max-height: 560px) {
+            .banner {
+                top: 86%;
+            }
+        }
+
+        @media screen and (max-height: 500px) {
+            .banner {
+                top: 88%;
+            }
+        }
+
+        @media screen and (max-height: 475px) {
+            .banner {
+                top: 90%;
+            }
+        }
+
+        @media screen and (max-height: 400px) {
+            .banner {
+                top: 92%;
+            }
+        }
+
+        .text-center a,
+        .text-center a:focus,
+        .text-center a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <form action="/adminValidate" id="form">
+            <h3>Login</h3>
+            <div class="form-group">
+                <input type="email" name="mail" id="mail" class="form-control" placeholder="Enter your mail"
+                    autocomplete="no-fill" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" id="password" class="form-control"
+                    placeholder="Enter your password" autocomplete="no-fill" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-primary btn-block">
+            </div>
+
+        </form>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    $("#form").submit(function (e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data["status"] == "done") {
+                    Swal.fire(
+                        'Success!',
+                        'You have successfully logged in',
+                        'success'
+                    ).then((result) => {
+                        window.location.replace("/dashboard");
+                    });
+                }
+                else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Wrong username or password'
+                    });
+                }
+            },
+            error: function (data) {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!'
+                });
+            }
+        });
+
+
+    });
+</script>

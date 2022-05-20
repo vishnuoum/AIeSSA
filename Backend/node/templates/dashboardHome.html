@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            margin-top: 70px;
+            margin-bottom: 60px;
+        }
+
+        .navbar {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            z-index: 1;
+        }
+
+        .navbar-brand {
+            cursor: default;
+        }
+
+        .spinner-border {
+            top: 45%;
+            position: absolute !important;
+        }
+
+
+        .linechart,
+        .doughnutchart {
+            margin: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+            border-radius: 5px;
+        }
+
+        canvas {
+            background-color: white !important;
+            max-height: 300px;
+        }
+
+        .chartTitle {
+            margin: 10px;
+            font-weight: bold;
+        }
+
+        .col-6,
+        .col-lg-6,
+        .col-12 {
+            padding: 5px !important;
+        }
+
+        .row {
+            margin: 10px
+        }
+
+        .top {
+            margin-top: 70px !important;
+        }
+
+        .highlight {
+            margin: 5px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+            padding: 10px;
+            border-radius: 5px;
+            color: rgb(0, 123, 255);
+            background-color: rgb(0, 123, 255, 0.2);
+            border: 2px solid rgb(0, 123, 255);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .highlight h4 {
+            overflow: auto;
+        }
+
+        .border {
+            border: 2px solid rgb(0, 123, 255) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-primary">
+        <div class="navbar-brand" href="#">Dashboard</div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users">User Details</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="row top hidden d-flex justify-content-center">
+        <div class="col-6 col-md-3">
+            <div class="highlight">
+                <h6>Total Users</h6>
+                <h4 id="totalUser">
+                </h4>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="highlight">
+                <h6>Total Videos Processed</h6>
+                <h4 id="totalVideoProcessed">
+                </h4>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row charts hidden">
+        <div class="col-lg-6">
+            <div class="doughnutchart border">
+                <h4 class="chartTitle">User distribution</h4>
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="linechart border">
+
+                <h4 class="chartTitle">New Users (Cumulative)</h4>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row charts hidden">
+        <div class="col-12">
+            <div class="linechart border">
+                <h4 class="chartTitle">Sign Conversion Usage (Per day)</h4>
+                <canvas id="myChart3"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" style="width: 2.5rem; height: 2.5rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+
+    var userCount = [], dates = [], disabiltyCount = [], disabilty = [], videoCount = [];
+
+
+    var doughnutData, lineData, totalUser, totalVideoProcessed;
+    $(window).on('load', function () {
+
+        $.ajax({
+            type: "GET",
+            url: "/homeInfo",
+            success: function (data) {
+                data = JSON.parse(data);
+                lineData = data[2];
+                doughnutData = data[1];
+                console.log(data[0]);
+                totalUser = data[0][0]["totalUsers"];
+                totalVideoProcessed = data[0][0]["totalProcessed"];
+                setChart();
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+
+    });
+
+    function setChart() {
+
+
+        $("#totalUser").html(totalUser);
+        $("#totalVideoProcessed").html(totalVideoProcessed);
+        $(".row").toggleClass("hidden");
+        $(".spinner-border").hide();
+        userCount = [], dates = [], disabiltyCount = [], disabilty = [], videoCount = [];
+
+        var temp;
+        for (var i = 0; i < lineData.length; i++) {
+            userCount[i] = lineData[i]["users"];
+            videoCount[i] = lineData[i]["processing"];
+            dates[i] = lineData[i]["date"];
+        }
+
+        disabilty = Object.keys(doughnutData[0]);
+        for (var i = 0; i < disabilty.length; i++) {
+            disabiltyCount[i] = doughnutData[0][disabilty[i]];
+        }
+
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Users',
+                    backgroundColor: 'rgb(0, 123, 255,0.4)',
+                    borderColor: 'rgb(0, 123, 255)',
+                    data: userCount
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: "Cumulative statistics",
+                        maintainAspectRatio: true
+                    },
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    // callbacks: {
+                    //     label: function (t, d) {
+                    //         if (t.yield=='0') {
+                    //             return '0';
+                    //         }
+                    //         else{
+                    //             return t.yLabel;
+                    //         }
+
+                    //     }
+                    // }
+                }
+            }
+        });
+
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'pie',
+
+            // The data for our dataset
+            data: {
+                labels: disabilty,
+                datasets: [{
+                    backgroundColor: ['rgb(255, 127, 0,0.4)', 'rgb(255, 99, 132,0.4)', 'rgb(25, 191,0,0.4)', 'rgb(115,115,115,0.4)', 'rgb(255,0,0,0.4)', 'rgb(0,255,0,0.4)', 'rgb(0,0,255,0.4)', 'rgb(0,255,123,0.4)', 'rgb(7,132,255,0.4)', 'rgb(0,255,255,0.4)', 'rgb(255,0,255,0.4)', 'rgb(255,200,150,0.4)', 'rgb(190,190,190,0.4)', 'rgb(40,40,40,0.4)'],
+                    borderColor: ['rgb(255, 127, 0)', 'rgb(255, 99, 132)', 'rgb(25, 191,0)', 'rgb(115,115,115)', 'rgb(255,0,0)', 'rgb(0,255,0)', 'rgb(0,0,255)', 'rgb(0,255,123)', 'rgb(7,132,255)', 'rgb(0,255,255)', 'rgb(255,0,255)', 'rgb(255,200,150)', 'rgb(190,190,190)', 'rgb(40,40,40)'],
+                    data: disabiltyCount
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                    title: {
+                        display: false,
+                        text: "Disablity statistics",
+                        maintainAspectRatio: true
+                    },
+                },
+                maintainAspectRatio: true,
+                responsive: true
+            }
+        });
+
+
+
+
+        var ctx = document.getElementById('myChart3').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Video Processed',
+                    backgroundColor: 'rgba(0, 123, 255,0.6)',
+                    borderColor: 'rgb(0, 123, 255)',
+                    borderWidth: 2,
+                    data: videoCount
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: "Sign Processing Service Statistics",
+                        maintainAspectRatio: true
+                    },
+                    pan: {
+                        // Boolean to enable panning
+                        enabled: true,
+
+                        // Panning directions. Remove the appropriate direction to disable 
+                        // Eg. 'y' would only allow panning in the y direction
+                        mode: 'x',
+
+                        speed: 1
+                    },
+
+                    // Container for zoom options
+                    zoom: {
+                        // Boolean to enable zooming
+                        enabled: true,
+                        // Zooming directions. Remove the appropriate direction to disable 
+                        // Eg. 'y' would only allow zooming in the y direction
+                        mode: 'x',
+                    }
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    // callbacks: {
+                    //     label: function (t, d) {
+                    //         if (t.yield=='0') {
+                    //             return '0';
+                    //         }
+                    //         else{
+                    //             return t.yLabel;
+                    //         }
+
+                    //     }
+                    // }
+                }
+            }
+        });
+
+
+
+    }
+
+
+</script>
