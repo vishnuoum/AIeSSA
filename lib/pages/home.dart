@@ -105,8 +105,10 @@ class _HomeState extends State<Home> {
         // }, child: Text("Audio Nav")),
         ElevatedButton(onPressed: (){
           Navigator.pushNamed(context, "/audioNavCustom");
-        }, child: Text("Audio Nav Custom")),
-        ElevatedButton(onPressed: (){}, child: Text("Voice")),
+        }, child: Text("Audio Navigation")),
+        ElevatedButton(onPressed: (){
+          Navigator.pushNamed(context, "/voiceAssign");
+        }, child: Text("Voice Assign")),
         ElevatedButton(onPressed: (){
           Navigator.pushNamed(context, "/learn");
         }, child: Text("Learn")),

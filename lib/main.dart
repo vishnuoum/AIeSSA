@@ -5,6 +5,8 @@ import 'package:app_for_specially_abled/pages/learn.dart';
 import 'package:app_for_specially_abled/pages/noiseMeter.dart';
 import 'package:app_for_specially_abled/pages/player.dart';
 import 'package:app_for_specially_abled/pages/signChat.dart';
+import 'package:app_for_specially_abled/pages/voiceAdd.dart';
+import 'package:app_for_specially_abled/pages/voiceAssign.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,6 +29,9 @@ class MyApp extends StatelessWidget {
         "/audioNavCustom" : (context) => AudioNavCustom(),
         "/learn" : (context) => Learn(),
         "/player" : (context) => Player(arguments: ModalRoute.of(context)!.settings.arguments as Map),
+        "/voiceAssign" : (context) => VoiceAssign(),
+        "/voiceAdd" : (context) => VoiceAdd(),
+
       },
       initialRoute: "/",
     );
