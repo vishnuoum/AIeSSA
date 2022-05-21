@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
 import os
-from matplotlib import pyplot as plt
 import time
 import mediapipe as mp
 from tensorflow import keras
+import librosa
+from dtw import dtw
+from numpy.linalg import norm
 
 
 mp_holistic = mp.solutions.holistic # Holistic model
@@ -24,7 +26,7 @@ def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # COLOR CONVERSION BGR 2 RGB
     image.flags.writeable = False                  # Image is no longer writeable
     results = model.process(image)                 # Make prediction
-    image.flags.writeable = True                   # Image is now writeable 
+    image.flags.writeable = True                   # Image is now writeable
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) # COLOR COVERSION RGB 2 BGR
     return image, results
 
@@ -43,8 +45,9 @@ def recognize(path):
     global sequence,sentence,threshold,model
 
     try:
+
         cap = cv2.VideoCapture(path)
-        # Set mediapipe model 
+        # Set mediapipe model
         with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
             while cap.isOpened():
 
@@ -59,28 +62,28 @@ def recognize(path):
                 # Make detections
                 image, results = mediapipe_detection(frame, holistic)
                 print(results)
-                
+
                 # 2. Prediction logic
                 keypoints = extract_keypoints(results)
                 sequence.append(keypoints)
                 sequence = sequence[-30:]
-                
+
                 if len(sequence) == 30:
                     res = model.predict(np.expand_dims(sequence, axis=0))[0]
                     print(actions[np.argmax(res)])
-                    
-                    if res[np.argmax(res)] > threshold: 
-                        if len(sentence) > 0: 
+
+                    if res[np.argmax(res)] > threshold:
+                        if len(sentence) > 0:
                             if actions[np.argmax(res)] != sentence[-1]:
                                 sentence.append(actions[np.argmax(res)])
                         else:
                             sentence.append(actions[np.argmax(res)])
-                    
+
 
                 # Break gracefully
                 if cv2.waitKey(10) & 0xFF == ord('q'):
                     break
-                
+
                 if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
                     break
 
@@ -90,6 +93,23 @@ def recognize(path):
     except:
         return "error"
 
+# recognize("test/test.mp4")
 
 
-
+def audioClassifier(path,pathList):
+    try:
+        y1, sr1 = librosa.load(path)
+        distanceList=[]
+        for pathDict in pathList:
+            y2, sr2 = librosa.load(pathDict["path"])
+            mfcc1 = librosa.feature.mfcc(y=y1,sr=sr1)
+            mfcc2 = librosa.feature.mfcc(y=y2, sr=sr2)
+            dist, cost, acc_cost, path = dtw(mfcc1.T, mfcc2.T,dist=lambda x, y: norm(x - y, ord=1))
+            print("Distance between the two : ",dist)
+            distanceList.append(dist)
+        minDistance = min(distanceList)
+        minDistIndex= distanceList.index(minDistance)
+        return pathList[minDistIndex]["label"]
+    except Exception as e:
+        print(e)
+        return "error"
