@@ -1,7 +1,12 @@
 <img src="https://zateart.com/aiessa/aiessa_logo2.png" width="300">
 
-# AIESSA
-## A flutter based application for specially abled people.
+# AIESSA - AI enabled System for Specially Abled
+### A flutter based application for specially abled people.
+
+AIeSSA is an AI-Based application that enables the
+specially-abled to communicate smarter. It uses speech
+recognition, text recognition for making communication
+easier.
 
 ![image](https://user-images.githubusercontent.com/57034697/169636154-a909d72a-9bba-44fd-80d7-5075de6616d3.png)
 ![image](https://user-images.githubusercontent.com/57034697/169636215-f4b4d41d-90e6-44a1-84ea-1cd1c301fdac.png)
@@ -9,15 +14,24 @@
 ![image](https://user-images.githubusercontent.com/57034697/169636254-01f32c53-9dc5-45bb-9d2d-7582da65abb4.png)
 
 
+### FEATURES 
+▰ SIGN CHAT
 
-### Fronend
-1. Flutter Android application for specially abled people.
-2. Flutter web application for companion. 
-4. Bootstap web DashBoard
+▰ CHAT BOT
 
-### BackEnd
-1. Nodejs
-2. Python
+▰ VOICE ASSIGN
+
+▰ AUDIO NAV
+
+▰ LEARN SIGNS
+
+▰ DASHBOARD
+
+
+
+### TECHNOLOGY USED 
+Flutter ▰ HTML, CSS, Bootstrap,Chart JS ▰ Tensorflow ▰ Tensorflow lite ▰ Python Flask ▰ Node JS ▰ pHp ▰ Maria DB
+
 
 
 
