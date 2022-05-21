@@ -28,6 +28,8 @@ easier.
 ▰ DASHBOARD
 
 
+# Fore more go to below Link
+https://zateart.com/aiessa/AIeSSA.pdf
 
 ### TECHNOLOGY USED 
 Flutter ▰ HTML, CSS, Bootstrap,Chart JS ▰ Tensorflow ▰ Tensorflow lite ▰ Python Flask ▰ Node JS ▰ pHp ▰ Maria DB
