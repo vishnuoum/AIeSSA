@@ -86,7 +86,7 @@ class _VoiceAddState extends State<VoiceAdd> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: Colors.blue
+            color: Colors.deepPurple[400]
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -94,7 +94,7 @@ class _VoiceAddState extends State<VoiceAdd> {
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
-          Align(child: Text("Add Voice",style: TextStyle(color: Colors.blue,fontSize: 30,fontWeight: FontWeight.bold),),alignment: Alignment.centerLeft,),
+          Align(child: Text("Add Voice",style: TextStyle(color: Colors.deepPurple[400],fontSize: 30,fontWeight: FontWeight.bold),),alignment: Alignment.centerLeft,),
           SizedBox(height: 40,),
           Container(
             padding: EdgeInsets.symmetric(vertical: 5,horizontal: 20),
@@ -120,7 +120,7 @@ class _VoiceAddState extends State<VoiceAdd> {
               IconButton(onPressed: ()async{
                 if (await record.hasPermission() && !recording) {
                   recorded = false;
-                // Start recording
+                  // Start recording
                   await record.start(
                     path: "$tempPath/recording.wav",
                     encoder: AudioEncoder.AAC, // by default
@@ -135,7 +135,7 @@ class _VoiceAddState extends State<VoiceAdd> {
                 setState(() {
                   recording = !recording;
                 });
-              }, icon: Icon(Icons.mic,color: recording?Colors.red:Colors.blue,),),
+              }, icon: Icon(Icons.mic,color: recording?Colors.red:Colors.deepPurple[400],),),
             ],
           ),
           SizedBox(height: 15,),
@@ -162,7 +162,7 @@ class _VoiceAddState extends State<VoiceAdd> {
             else{
               alertDialog("Please complete the form");
             }
-          }, child: Text("Add",style: TextStyle(fontSize: 17),),style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),backgroundColor: Colors.blue,primary: Colors.white,padding: EdgeInsets.all(18)),),
+          }, child: Text("Add",style: TextStyle(fontSize: 17),),style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),backgroundColor: Colors.deepPurple[400],primary: Colors.white,padding: EdgeInsets.all(18)),),
         ],
       ),
     );

@@ -27,7 +27,7 @@ class _SignChatState extends State<SignChat> {
 
   TextToSpeech tts = TextToSpeech();
 
-  Color? chatColor = Colors.blue[100],buttonColor = Colors.blue,chatBoxColor = Colors.blue[100];
+  Color? chatColor = Colors.deepPurple[100],buttonColor = Colors.deepPurple[400],chatBoxColor = Colors.deepPurple[100];
   static double iconSize = 30, splashRadius = 70;
   TextEditingController chatController = TextEditingController(text: "");
 
@@ -147,15 +147,19 @@ class _SignChatState extends State<SignChat> {
             borderRadius: BorderRadius.circular(splashRadius),
             onTap: () async {
               final XFile? video = await _picker.pickVideo(source: ImageSource.camera);
+              if(video!.path==""){
+                return;
+              }
               showLoading(context);
-              print(video!.path);
+              print(video.path);
               var result = await uploadVideo.upload(path: video.path);
               print(result);
+              Navigator.pop(context);
               if(result=="error"){
                 alertDialog("Something went wrong. Try again");
                 return;
               }
-              Navigator.pop(context);
+
               if(result["status"]=="done" && result["sentence"].length!=0) {
                 setState(() {
                   chat.add({"person": "other", "content": result["sentence"]});
@@ -310,6 +314,7 @@ class _SignChatState extends State<SignChat> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign Chat'),
+        backgroundColor: buttonColor,
       ),
       body: SizedBox.expand(
         child: Column(

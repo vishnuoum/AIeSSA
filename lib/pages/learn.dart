@@ -14,7 +14,7 @@ class _LearnState extends State<Learn> {
   final ImagePicker _picker = ImagePicker();
   var res;
 
-  Color textColor = Colors.blue;
+  Color? textColor = Colors.deepPurple[400];
 
   List<String> alpha = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 
@@ -132,46 +132,53 @@ class _LearnState extends State<Learn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Learn"),
+    return Theme(
+      data: ThemeData(
+          primaryColor: Colors.deepPurple[400]
       ),
-      body: SizedBox.expand(
-        child: ListView(
-          padding: EdgeInsets.all(10),
-          children: [
-            SizedBox(height: 20,),
-            Image.asset("assets/signs/signs.gif",height: 150,),
-            SizedBox(height: 20,),
-            Text("Learn Alphabets",style: TextStyle(color: textColor,fontWeight: FontWeight.bold,fontSize: 25),),
-            SizedBox(height: 20,),
-            GridView.builder(// to disable GridView's scrolling
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10
-                ),
-                itemCount: 26,
-                itemBuilder: (BuildContext context, int index) {
-                  return ElevatedButton(
-                    onPressed: (){
-                      Navigator.pushNamed(context, "/player",arguments: {'path':"assets/signs/${alpha[index]}.mp4","letter":alpha[index]});
-                    },
-                    child: Center(child: Text(alpha[index].toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
-                  );
-                }
-            )
-          ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Learn"),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: (){
-          scan(context);
-        },
-        label: Text("Sign Cam"),
-        icon: Icon(Icons.camera_alt),
+        body: SizedBox.expand(
+          child: ListView(
+            padding: EdgeInsets.all(10),
+            children: [
+              SizedBox(height: 20,),
+              Image.asset("assets/signs/signs.gif",height: 150,),
+              SizedBox(height: 20,),
+              Text("Learn Alphabets",style: TextStyle(color: textColor,fontWeight: FontWeight.bold,fontSize: 25),),
+              SizedBox(height: 20,),
+              GridView.builder(// to disable GridView's scrolling
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10
+                  ),
+                  itemCount: 26,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.deepPurple[400]),
+                      onPressed: (){
+                        Navigator.pushNamed(context, "/player",arguments: {'path':"assets/signs/${alpha[index]}.mp4","letter":alpha[index]});
+                      },
+                      child: Center(child: Text(alpha[index].toUpperCase(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                    );
+                  }
+              )
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.deepPurple[400],
+          onPressed: (){
+            scan(context);
+          },
+          label: Text("Sign Cam"),
+          icon: Icon(Icons.camera_alt),
+        ),
       ),
     );
   }

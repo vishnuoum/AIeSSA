@@ -77,7 +77,7 @@ app.post("/register", (request, response) => {
         }
         else {
             console.log("Register error");
-            response.end(JSON.stringify({ "status": "error" }));
+            response.end("error");
         }
         console.log("Register mysql error: ", error);
     });
@@ -97,6 +97,40 @@ app.post("/getUserLabels", (request, response) => {
             response.end("error");
         }
         console.log("get User Labels mysql error: ", error);
+    });
+});
+
+// live location push
+app.post("/addLiveLocation", (request, response) => {
+    console.log("ladd live location", request.body);
+    connection.query("Insert into location(userId,latitude,longitude) Values((Select id from users where mail=?),?,?)", [request.body.mail,request.body.lat,request.body.long], function (error, result) {
+        if (error == null) {
+            console.log("addLiveLocation");
+            response.send("done");
+            response.end();
+        }
+        else {
+            console.log("addLiveLocation error");
+            response.end("error");
+        }
+        console.log("addLiveLocation mysql error: ", error);
+    });
+});
+
+// live location push
+app.post("/liveLocation", (request, response) => {
+    console.log("live location", request.body);
+    connection.query("Select latitude and longitude from location where userId=? order by id limit 1", [request.body.userId], function (error, result) {
+        if (error == null) {
+            console.log("live location");
+            response.send("done");
+            response.end();
+        }
+        else {
+            console.log("LiveLocation error");
+            response.end("error");
+        }
+        console.log("LiveLocation mysql error: ", error);
     });
 });
 
@@ -144,7 +178,7 @@ app.get("/homeInfo", (request, response) => {
         }
         else {
             console.log("analytocs home error");
-            response.end(JSON.stringify({ "status": "error" }));
+            response.end("error");
         }
         console.log("Register mysql error: ", error);
     });
@@ -187,6 +221,59 @@ app.get('/users', function (request, response) {
 app.get('/login', function (request, response) {
     response.sendFile(__dirname + '/templates/login.html');
 });
+
+// dashboard notify
+app.post('/notify', function (request, response) {
+
+    if (request.body.title != undefined && request.body.content != undefined && request.cookies["status"] == "lsjfklsdkflsdkfldksf'") {
+
+        var message = {
+            app_id: "ec008e93-b422-4fa5-abda-e684db23b3aa",
+            contents: { "en": request.body.content },
+            headings: { "en": request.body.title },
+            included_segments: ["Subscribed Users"],
+        };
+
+        var headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "Basic ZmNmZTZjOTQtYTk1Ni00ZTk5LTg3ZjUtZDE4MzZiZGZmYjdk"
+        };
+
+        var options = {
+            host: "onesignal.com",
+            port: 443,
+            path: "/api/v1/notifications",
+            method: "POST",
+            headers: headers
+        };
+
+
+        var req = https.request(options, function (res) {
+            res.on('data', function (data) {
+                console.log("Response:\n", JSON.parse(data));
+                if (JSON.parse(data)["error"] === undefined) {
+                    response.end("done");
+                }
+                else {
+                    response.end("error");
+                }
+            });
+        });
+
+        req.on('error', function (e) {
+            console.log("ERROR:");
+            console.log(e);
+            response.end("error");
+        });
+
+        req.write(JSON.stringify(message));
+        req.end();
+    }
+    else {
+        response.end("No Authorization");
+    }
+
+})
 
 //--------------------------- admin Side ends---------------------------------------
 

@@ -42,6 +42,8 @@ dependencies:
   path_provider: ^2.0.3
   record: ^3.0.4
   onesignal_flutter: ^3.2.3
+  location: ^4.4.0
+  url_launcher: ^6.0.10
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +67,7 @@ flutter:
     - assets/models/handModel.tflite
     - assets/models/handModelLabels.txt
     - assets/signs/
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:app_for_specially_abled/services/constants.dart';
+import "package:app_for_specially_abled/constants.dart";
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 
 class UploadVideo{
-  
+
   Future<dynamic> upload({required String? path})async{
     try{
       HttpClient client = new HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
@@ -32,5 +32,4 @@ class UploadVideo{
       return "error";
     }
   }
-  
 }

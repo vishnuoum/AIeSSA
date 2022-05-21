@@ -134,8 +134,7 @@
             url: url,
             data: form.serialize(), // serializes the form's elements.
             success: function (data) {
-                data = JSON.parse(data);
-                if (data["status"] == "done") {
+                if (data == "done") {
                     Swal.fire(
                         'Success!',
                         'You have successfully logged in',

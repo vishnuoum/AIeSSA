@@ -36,7 +36,7 @@ class _AudioNavCustomState extends State<AudioNavCustom> {
   final int minimumTimeBetweenSamples = 30;
   final int suppressionTime = 1500;
 
-  Color textColor = Colors.blue;
+  Color? textColor = Colors.deepPurple[400];
   double fontSize = 25;
 
   @override
@@ -86,82 +86,88 @@ class _AudioNavCustomState extends State<AudioNavCustom> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-            appBar: AppBar(
-              title: Text('Audio Nav'),
-            ),
+    return Theme(
+      data: ThemeData(
+          accentColor: Colors.deepPurple[400]
+      ),
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: textColor,
+            title: Text('Audio Navigation'),
+          ),
 
-            ///Streambuilder for inference results
-            body: StreamBuilder<Map<dynamic, dynamic>>(
-                stream: result,
-                builder: (BuildContext context,
-                    AsyncSnapshot<Map<dynamic, dynamic>> inferenceSnapshot) {
-                  ///futurebuilder for getting the label list
-                  return FutureBuilder(
-                      future: fetchLabelList(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<String>> labelSnapshot) {
-                        switch (inferenceSnapshot.connectionState) {
-                          case ConnectionState.none:
-                          //Loads the asset file.
-                            if (labelSnapshot.hasData) {
-                              return labelListWidget(labelSnapshot.data);
-                            } else {
-                              return Center(child: const CircularProgressIndicator());
-                            }
-                          case ConnectionState.waiting:
+          ///Streambuilder for inference results
+          body: StreamBuilder<Map<dynamic, dynamic>>(
+              stream: result,
+              builder: (BuildContext context,
+                  AsyncSnapshot<Map<dynamic, dynamic>> inferenceSnapshot) {
+                ///futurebuilder for getting the label list
+                return FutureBuilder(
+                    future: fetchLabelList(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<String>> labelSnapshot) {
+                      switch (inferenceSnapshot.connectionState) {
+                        case ConnectionState.none:
+                        //Loads the asset file.
+                          if (labelSnapshot.hasData) {
+                            return labelListWidget(labelSnapshot.data);
+                          } else {
+                            return Center(child: const CircularProgressIndicator());
+                          }
+                        case ConnectionState.waiting:
 
-                          ///Widets will let the user know that its loading when waiting for results
-                            return Stack(children: <Widget>[
-                              Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: inferenceTimeWidget('calculating..')),
-                              labelListWidget(labelSnapshot.data),
-                            ]);
+                        ///Widets will let the user know that its loading when waiting for results
+                          return Stack(children: <Widget>[
+                            Align(
+                                alignment: Alignment.bottomRight,
+                                child: inferenceTimeWidget('calculating..')),
+                            labelListWidget(labelSnapshot.data),
+                          ]);
 
-                        ///Widgets will display the final results.
-                          default:
-                            return Stack(children: <Widget>[
-                              Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: inferenceTimeWidget(showResult(
-                                      inferenceSnapshot, 'inferenceTime') +
-                                      'ms')),
-                              labelListWidget(
-                                  labelSnapshot.data,
-                                  showResult(
-                                      inferenceSnapshot, 'recognitionResult'))
-                            ]);
-                        }
+                      ///Widgets will display the final results.
+                        default:
+                          return Stack(children: <Widget>[
+                            Align(
+                                alignment: Alignment.bottomRight,
+                                child: inferenceTimeWidget(showResult(
+                                    inferenceSnapshot, 'inferenceTime') +
+                                    'ms')),
+                            labelListWidget(
+                                labelSnapshot.data,
+                                showResult(
+                                    inferenceSnapshot, 'recognitionResult'))
+                          ]);
+                      }
+                    });
+              }),
+          floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: ValueListenableBuilder(
+              valueListenable: isRecording,
+              builder: (context, value, widget) {
+                if (value == false) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      isRecording.value = true;
+                      setState(() {
+                        getResult();
                       });
-                }),
-            floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: ValueListenableBuilder(
-                valueListenable: isRecording,
-                builder: (context, value, widget) {
-                  if (value == false) {
-                    return FloatingActionButton(
-                      onPressed: () {
-                        isRecording.value = true;
-                        setState(() {
-                          getResult();
-                        });
-                      },
-                      backgroundColor: Colors.blue,
-                      child: const Icon(Icons.mic),
-                    );
-                  } else {
-                    return FloatingActionButton(
-                      onPressed: () {
-                        log('Audio Recognition Stopped');
-                        TfliteAudio.stopAudioRecognition();
-                      },
-                      backgroundColor: Colors.red,
-                      child: const Icon(Icons.adjust),
-                    );
-                  }
-                }));
+                    },
+                    backgroundColor: textColor,
+                    child: const Icon(Icons.mic),
+                  );
+                } else {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      log('Audio Recognition Stopped');
+                      TfliteAudio.stopAudioRecognition();
+                    },
+                    backgroundColor: Colors.red,
+                    child: const Icon(Icons.adjust),
+                  );
+                }
+              })),
+    );
   }
 
   ///If snapshot data matches the label, it will change colour
@@ -171,28 +177,28 @@ class _AudioNavCustomState extends State<AudioNavCustom> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [Text(result==null?"Initializing...":result.toString(),style: TextStyle(color: ["Car Horn","Dog Bark","Gunshot","Siren"].contains(result.toString())?Colors.red:textColor,fontSize: fontSize,fontWeight: FontWeight.bold),)]
-            // labelList!.map((labels) {
-            //   if (labels == result) {
-            //     return Padding(
-            //         padding: const EdgeInsets.all(5.0),
-            //         child: Text(labels.toString(),
-            //             textAlign: TextAlign.center,
-            //             style: const TextStyle(
-            //               fontWeight: FontWeight.bold,
-            //               fontSize: 25,
-            //               color: Colors.green,
-            //             )));
-            //   } else {
-            //     return Padding(
-            //         padding: const EdgeInsets.all(5.0),
-            //         child: Text(labels.toString(),
-            //             textAlign: TextAlign.center,
-            //             style: const TextStyle(
-            //               fontWeight: FontWeight.bold,
-            //               color: Colors.black,
-            //             )));
-            //   }
-            // }).toList()
+          // labelList!.map((labels) {
+          //   if (labels == result) {
+          //     return Padding(
+          //         padding: const EdgeInsets.all(5.0),
+          //         child: Text(labels.toString(),
+          //             textAlign: TextAlign.center,
+          //             style: const TextStyle(
+          //               fontWeight: FontWeight.bold,
+          //               fontSize: 25,
+          //               color: Colors.green,
+          //             )));
+          //   } else {
+          //     return Padding(
+          //         padding: const EdgeInsets.all(5.0),
+          //         child: Text(labels.toString(),
+          //             textAlign: TextAlign.center,
+          //             style: const TextStyle(
+          //               fontWeight: FontWeight.bold,
+          //               color: Colors.black,
+          //             )));
+          //   }
+          // }).toList()
         ));
   }
 

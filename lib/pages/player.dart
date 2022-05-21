@@ -41,13 +41,12 @@ class _PlayerState extends State<Player> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.blue
-        ),
         elevation: 0,
       ),
       body: !init?Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(Colors.deepPurple[400])
+        ),
       ):Stack(
         alignment: Alignment.center,
         children: <Widget>[

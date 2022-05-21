@@ -71,7 +71,7 @@ class _VoiceAssignState extends State<VoiceAssign> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.blue),),),
+            SizedBox(height: 50,width: 50,child: CircularProgressIndicator(strokeWidth: 5,valueColor: AlwaysStoppedAnimation(Colors.deepPurple[400]),),),
             SizedBox(height: 10,),
             Text("Loading")
           ],
@@ -115,6 +115,7 @@ class _VoiceAssignState extends State<VoiceAssign> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple[400],
         title: Text("Voice Assign"),
         actions: [
           TextButton.icon(onPressed: (){
@@ -135,7 +136,7 @@ class _VoiceAssignState extends State<VoiceAssign> {
         child: Text("No audios to show",style: TextStyle(color: Colors.grey,fontSize: 20),),
       ):
       GridView.builder(// to disable GridView's scrolling
-        padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -146,6 +147,7 @@ class _VoiceAssignState extends State<VoiceAssign> {
           itemCount: result.length,
           itemBuilder: (BuildContext context, int index) {
             return ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: Colors.deepPurple[400]),
               onPressed: (){
                 tts.speak(result[index]["label"]);
               },
@@ -155,15 +157,15 @@ class _VoiceAssignState extends State<VoiceAssign> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: !loading&&result.length>=1?FloatingActionButton(
-        backgroundColor: recording?Colors.red:Colors.blue,
+        backgroundColor: recording?Colors.red:Colors.deepPurple[400],
         onPressed: ()async{
           if (await record.hasPermission() && !recording) {
             // Start recording
             await record.start(
-            path: "$tempPath/recording.wav",
-            encoder: AudioEncoder.AAC, // by default
-            bitRate: 128000, // by default
-            samplingRate: 44100, // by default
+              path: "$tempPath/recording.wav",
+              encoder: AudioEncoder.AAC, // by default
+              bitRate: 128000, // by default
+              samplingRate: 44100, // by default
             );
           }
           else if(recording){
