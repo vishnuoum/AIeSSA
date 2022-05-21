@@ -348,6 +348,8 @@ class _HomeState extends State<Home> {
             setState(() {
               locationStart = true;
             });
+            Clipboard.setData(ClipboardData(text: "http://aiessa.companion.techzate.in.techzate.in/#/${sharedPreferences.getString("mail")}"));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Live tracking url copied to clipboard")));
           }
         },
         style: TextButton.styleFrom(

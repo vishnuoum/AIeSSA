@@ -233,18 +233,17 @@ class _SignChatState extends State<SignChat> {
             )
         ),
         Expanded(
-          child: CircleAvatar(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.red,
-            child: IconButton(
-              icon: Icon(Icons.record_voice_over),
-              onPressed: (){
-                setState(() {
-                  listening = false;
-                });
-                _stopListening();
-              },
-            ),
+          flex: 4,
+          child: TextButton.icon(
+            style: TextButton.styleFrom(primary: Colors.red),
+            label: Text("Stop"),
+            icon: Icon(Icons.record_voice_over),
+            onPressed: (){
+              setState(() {
+                listening = false;
+              });
+              _stopListening();
+            },
           ),
         )
       ],
@@ -321,7 +320,9 @@ class _SignChatState extends State<SignChat> {
           children: [
             Expanded(
                 flex: 8,
-                child: ListView.builder(
+                child: chat.length==0?Center(
+                  child: Text("Tap on message to convert it to speech.\nDouble tap it to convert it into sign",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey),),
+                ):ListView.builder(
                   reverse: true,
                   // controller: scrollController,
                   padding: EdgeInsets.only(left: 20,right: 20,bottom: 10),
@@ -332,22 +333,27 @@ class _SignChatState extends State<SignChat> {
                       onDoubleTap: (){
                         Navigator.pushNamed(context, "/textToSign",arguments: {"sentence":chat[index]["content"]});
                       },
-                      onLongPress: (){
+                      onTap: (){
                         tts.speak(chat[index]["content"]);
                       },
                       child: Align(
                         alignment: chat[index]["person"]!="you"?Alignment.centerLeft:Alignment.centerRight,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 12),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: chatColor,
-                          ),
-                          constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width*0.65
-                          ),
-                          child: Padding(padding: chat[index]["person"]=="you"?EdgeInsets.only(right: 5):EdgeInsets.only(left: 5),child: Text(chat[index]["content"],style: TextStyle(fontSize: 16),),),
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 12),
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: chatColor,
+                              ),
+                              constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width*0.65
+                              ),
+                              child: Padding(padding: chat[index]["person"]=="you"?EdgeInsets.only(right: 5):EdgeInsets.only(left: 5),child: Text(chat[index]["content"],style: TextStyle(fontSize: 16),),),
+                            ),
+                            Positioned(child: Icon(Icons.play_arrow,color: Colors.deepPurple,size: 20,),bottom: 0,left: 0,)
+                          ],
                         ),
                       ),
                     );

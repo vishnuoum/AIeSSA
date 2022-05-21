@@ -156,7 +156,8 @@ class _VoiceAssignState extends State<VoiceAssign> {
           }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: !loading&&result.length>=1?FloatingActionButton(
+      floatingActionButton: !loading&&result.length>=1?FloatingActionButton.extended(
+        label: Text(!recording?"Tap to Start":"Tap to Process"),
         backgroundColor: recording?Colors.red:Colors.deepPurple[400],
         onPressed: ()async{
           if (await record.hasPermission() && !recording) {
@@ -184,7 +185,7 @@ class _VoiceAssignState extends State<VoiceAssign> {
             recording = !recording;
           });
         },
-        child: Icon(Icons.mic),
+        icon: Icon(Icons.mic),
       ):Container(),
     );
   }
